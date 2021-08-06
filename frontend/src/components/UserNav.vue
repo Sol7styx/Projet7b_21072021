@@ -1,15 +1,15 @@
 <template>
-    <v-card class="d-flex flex-column flex-md-row align-center" :color="'#ffd7d7'" min-height="50" tile>
-      <div class="pa-3 mr-auto">Bienvenue chez Groupomania !</div>
-      <router-link to="/" tag="button" class="nav-button text-uppercase">Toutes les publications</router-link>
-       <v-divider class="my-4 d-none d-sm-flex" vertical></v-divider>
-       <router-link to="/newpublication" tag="button" class="nav-button text-uppercase">Nouvelle publication</router-link>
-       <v-divider class="my-4 d-none d-sm-flex" vertical></v-divider>
-      <router-link to="/publications/user" tag="button" class="nav-button text-uppercase">Mes publications</router-link>
-       <v-divider class="my-4 d-none d-sm-flex" vertical></v-divider>
-      <router-link to="/user/profil" tag="button" class="nav-button text-uppercase">Profil</router-link>
-       <v-divider class="my-4 d-none d-sm-flex" vertical></v-divider>
-      <button v-on:click="deconnexion()" class="nav-button text-uppercase">Déconnexion</button>
+    <v-card class="d-flex flex-column flex-md-row align-center" :color="'#A9EAFE'" min-height="50" tile>
+        <div class="pa-3 mr-auto">Bienvenue chez Groupomania !</div>
+        <router-link to="/" tag="button" class="nav-button text-uppercase">Toutes les publications</router-link>
+        <v-divider class="my-4 d-none d-sm-flex" vertical></v-divider>
+        <router-link to="/newpublication" tag="button" class="nav-button text-uppercase">Nouvelle publication</router-link>
+        <v-divider class="my-4 d-none d-sm-flex" vertical></v-divider>
+        <router-link to="/publications/user" tag="button" class="nav-button text-uppercase">Mes publications</router-link>
+        <v-divider class="my-4 d-none d-sm-flex" vertical></v-divider>
+        <router-link to="/user/profil" tag="button" class="nav-button text-uppercase">Profil</router-link>
+        <v-divider class="my-4 d-none d-sm-flex" vertical></v-divider>
+        <button v-on:click="deconnexion()" class="nav-button text-uppercase">Déconnexion</button>
     </v-card>
 </template>
 

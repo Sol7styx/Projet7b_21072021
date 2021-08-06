@@ -119,7 +119,7 @@ export default {
         padding: 6px 12px;
         font-size: 1.5rem;
         color: black;
-        background-color: #fe7d55;
+        background-color: #77B5FE;
         border: none;
         border-radius: 10px;
         transition-duration: 0.2s;
@@ -133,7 +133,7 @@ export default {
         padding: 6px 12px;
         font-size: 1rem;
         color: black;
-        background-color: #ffb49d;
+        background-color: #A9EAFE;
         border: none;
         border-radius: 10px;
         transition-duration: 0.2s;
