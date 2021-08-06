@@ -93,7 +93,7 @@ exports.getOneUser = (req, res, next) => {
     const userId = tokenInfos[0];               
 
     if (userId === Number(req.params.id)) {
-        let sql = "SELECT nom, prenom, email, FROM users WHERE id = ?";  
+        let sql = "SELECT nom, prenom, email FROM users WHERE id = ?";  
         let inserts = [userId];                                                             
         sql = mysql.format(sql, inserts);                                                   
 
