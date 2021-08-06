@@ -6,7 +6,7 @@
             <div class="mb-2">Champs requis (*)</div>
             <input id="nom" ref="nom" type="text" placeholder="Nom"  title="Renseignez votre nom">
             <input id="prenom" ref="prenom" type="text" placeholder="Prénom" title="Renseignez votre prénom">
-            <input id="email" ref="email" type="email" placeholder="E-mail (*)" required title="Renseignez votre email">
+            <input id="email" ref="email" type="email" placeholder="E-mail (*)" required title="Renseignez votre email">           
             <input id="password" ref="password" type="password" placeholder="Mot de passe (*)" title="Renseignez votre mot de passe" required>
             <input id="confirmedpassword" ref="confirmedpassword" type="password" placeholder="Confirmer mot de passe (*)" title="Renseignez votre mot de passe de nouveau" required>
             <div class="message-erreur">{{ message }}</div>
@@ -21,16 +21,20 @@
 
 <script>
 import {notConnectedClient} from "@/services/auth.js"
+
 export default {
   name: 'Signup',
+
   data() {
       return {
           message: "",
       };
   },
+
   created(){
   this.connectedUser()
   },
+
   methods: {
     connectedUser(){                                    // fonction de vérification de la session utilisateur (Item dans le localStorage)
       if(localStorage.groupomaniaUser == undefined){
@@ -42,19 +46,19 @@ export default {
         location.href = '/';
       }
     },
+
     signup() {                                        // fonction qui gère la création d'un nouvel utilisateur (requête)
       const nom = this.$refs.nom.value;
       const prenom = this.$refs.prenom.value;
       const email = this.$refs.email.value;
       const password = this.$refs.password.value;
       const confirmedPassword = this.$refs.confirmedpassword.value;
+
       if(password === confirmedPassword){             // on vérifie que le mot de passe est confirmé
         notConnectedClient.post("/users/signup", {
           nom,
           prenom,
-          email,
-          departement,
-          poste, 
+          email, 
           password
         })
         .then((res) => {
@@ -85,6 +89,7 @@ export default {
       background-attachment: fixed;
       min-height: 100vh;
     }
+
     .container{
         max-width: 500px;
         margin: 0;
@@ -97,6 +102,7 @@ export default {
           justify-content: space-around;
           align-items: baseline;
     }
+
     form input{
         margin: auto;
         width: 80%;
@@ -108,6 +114,7 @@ export default {
         border: 1px rgba(0, 0, 0, 0.548) solid;
         border-radius: 15px;
     }
+
     #signup{
         padding: 6px 12px;
         font-size: 1.5rem;
@@ -117,9 +124,11 @@ export default {
         border-radius: 10px;
         transition-duration: 0.2s;
     }
+
     #signup:hover{
         transform: scale(1.1);
     }
+
     #login{
         padding: 6px 12px;
         font-size: 1rem;
@@ -129,6 +138,7 @@ export default {
         border-radius: 10px;
         transition-duration: 0.2s;
     }
+
     #login:hover{
         transform: scale(1.1);
     }
