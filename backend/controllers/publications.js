@@ -17,19 +17,19 @@ let decodeToken = function(req){                                                
 
 exports.createPublication = (req, res, next) => {
 
-    const tokenInfos = decodeToken(req);        
-    const userId = tokenInfos[0];               
+    const tokenInfos = decodeToken(req);        // on utilise la fonction decodeToken
+    const userId = tokenInfos[0];               // on obtient le UserId du token
 
-    const titre = req.body.titre;               
-    const description = req.body.description;   
+    const titre = req.body.titre;               // on récupère le titre de la publication
+    const description = req.body.description;   // on récupère la description de la publication
 
-    if (req.file !== undefined) {                                                               
-        const imageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;    
-        let sql = "INSERT INTO publications (user_id, titre, description, image_url) VALUES (?, ?, ?, ? )";     
-        let inserts = [userId, titre, description, imageUrl];                                                   
-        sql = mysql.format(sql, inserts);                                                                       
+    if (req.file !== undefined) {                                                               // si une image est trouvée
+        const imageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;    // on paramètre son url
+        let sql = "INSERT INTO publications (user_id, titre, description, image_url) VALUES (?, ?, ?, ? )";     // préparation de la requete SQL
+        let inserts = [userId, titre, description, imageUrl];                                                   // utilisation des valeurs à insérer
+        sql = mysql.format(sql, inserts);                                                                       // assemblage final de la requête
 
-        const publicationCreate = bdd.query(sql, (error, publication) => {                                      
+        const publicationCreate = bdd.query(sql, (error, publication) => {                                      // envoi de la requête a la base de données
             if (!error) {
                 res.status(201).json({ message: "Publication enregistrée" });
             } else {
@@ -37,12 +37,12 @@ exports.createPublication = (req, res, next) => {
             }
         });
     } else {
-        const imageUrl = "";  
-        let sql = "INSERT INTO publications (user_id, titre, description, image_url) VALUES (?, ?, ?, ? )";     
-        let inserts = [userId, titre, description, imageUrl];                                                   
-        sql = mysql.format(sql, inserts);                                                                       
+        const imageUrl = "";  // si aucune image alors on laisse le champ vide
+        let sql = "INSERT INTO publications (user_id, titre, description, image_url) VALUES (?, ?, ?, ? )";     // préparation de la requete SQL
+        let inserts = [userId, titre, description, imageUrl];                                                   // utilisation des valeurs à insérer
+        sql = mysql.format(sql, inserts);                                                                       // assemblage final de la requête
 
-        const publicationCreate = bdd.query(sql, (error, publication) => {                                      
+        const publicationCreate = bdd.query(sql, (error, publication) => {                                      // envoi de la requête a la base de données
             if (!error) {
                 res.status(201).json({ message: "Publication enregistrée" });
             } else {
@@ -59,7 +59,7 @@ exports.getAllPublications = (req, res, next) => {
     const page = req.query.page;                // on récupère le numéro de la page (la première page est la page 1)
     let offset = 10;                            // offset par défaut sur 10 (limite du nombre de publication et décalage de l'offset)
 
-    offset = offset * (page - 1);               // on multiplie l'offset par le numéro de la page -1
+    offset = offset * (page - 1);               // on multipli l'offset par le numéro de la page -1
 
     let sql = `SELECT   user.id AS publicationCreateByUserId,
                         user.nom AS publicationCreateByUserNom,

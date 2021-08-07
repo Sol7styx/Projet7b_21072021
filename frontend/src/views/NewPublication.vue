@@ -23,22 +23,18 @@ import {connectedClient} from "@/services/auth.js"
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config();
-
 import Login from '@/components/Login.vue';
 import Header from '@/components/Header.vue';
 import UserNav from '@/components/UserNav.vue';
 import PublicationsNav from '@/components/PublicationsNav.vue';
-
 export default {
   name: 'NewPublication',
-
   components: {     // déclaration des composants utilisés par la Vue
     Login,
     Header,
     UserNav,
     PublicationsNav
   },
-
   data() {
     return{
       approuvedConnexion: false,      // on déclare une varibale de type boléen, false par défault (contiendra la validation comme quoi un utilisateur est authentifié)
@@ -47,11 +43,9 @@ export default {
       message: ""                     // on déclare une varibale de type string, vide par défault (contiendra les messages d'erreur envoyé par le back)
     };
   },
-
   created(){                          // hook de cycle de vie qui intervient avant le hook mounted et vérifie la session utilisateur (Item dans le localStorage)
     this.connectedUser()
   },
-
   mounted(){
     if(this.approuvedConnexion === true) {
       const token = JSON.parse(localStorage.groupomaniaUser).token                            // on récupère le token dans le localstorage
@@ -72,7 +66,6 @@ export default {
         console.log('Utilisateur connecté !');
       }
     },
-
     newPublication(){                                     // fonction qui gère la création d'une nouvelle publication (requête)
       const userId = this.sessionUserId;
       const titre = this.$refs.titre.value;
@@ -89,7 +82,6 @@ export default {
           formData.append("titre", titre);
           formData.append("description", description);
           formData.append("image", uploadImage);
-
           connectedClient.post('/publications', formData)
           .then((res) => {
             if(res.status === 201) {
@@ -112,7 +104,6 @@ export default {
       background-attachment: fixed;
       min-height: 100vh;
     }
-
     .container{
         max-width: 500px;
         margin: 0;
@@ -125,7 +116,6 @@ export default {
           justify-content: space-around;
           align-items: baseline;
     }
-
     form input{
         margin: auto;
         width: 80%;
@@ -142,14 +132,12 @@ export default {
         color: #585858;
         font-weight: 500;
     }
-
     .container-button{
           display: flex;
           flex-direction: row;
           justify-content: space-around;
           align-items: baseline;
     }
-
     #newpublication{
         padding: 6px 12px;
         font-size: 1.5rem;
@@ -159,11 +147,9 @@ export default {
         border-radius: 10px;
         transition-duration: 0.2s;
     }
-
     #newpublication:hover{
         transform: scale(1.1);
     }
-
     .message-erreur{
         text-align: center;
         margin: auto;
