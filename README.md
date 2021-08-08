@@ -9,6 +9,6 @@
 ### Frontend
 * Ouvrir le terminal, aller dans le répertoire frontend et exécuter `npm install` pour installer les dépendances.  
 * Ouvrir le fichier `.env` du front et entrer la même clé secrète renseignée dans le `.env` du backend.  
-* Le projet a été généré avec VueJS: exécuer `npm run serve` pour lancer le serveur de développement.
+* Le projet a été généré avec VueJS: exécuter `npm run serve` pour lancer le serveur de développement.
 
  
