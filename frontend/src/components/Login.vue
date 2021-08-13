@@ -24,7 +24,7 @@ export default {
 
     data() {
         return {
-            message: "",                                        // on déclare une varibale de type string, vide par défault (contiendra les messages d'erreur envoyé par le back)
+            message: "",                                        // on déclare une variable de type string, vide par défault (contiendra les messages d'erreur envoyé par le back)
         };
     },
 
