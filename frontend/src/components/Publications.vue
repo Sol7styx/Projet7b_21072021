@@ -132,7 +132,7 @@ export default {
         padding: 6px 12px;
         font-size: 1.5rem;
         color: black;
-        background-color: #77B5FE;
+        background-color: #FAA28F;
         border: none;
         border-radius: 10px;
         transition-duration: 0.2s;

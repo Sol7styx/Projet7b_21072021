@@ -14,7 +14,7 @@
         margin: 0 10px ;
         padding: 10px 12px;
         font-size: 1rem;
-        color:#123FF8;
+        color:#FD200E;
         border: none;
         border-radius: 10px;
         transition-duration: 0.2s;
@@ -29,7 +29,7 @@
         margin: 0 10px ;
         padding: 10px 12px;
         font-size: 1.1rem;
-        color:#0735F6;
+        color:#E91D0D;
         font-weight: bold;
         border: none;
         border-radius: 10px;
