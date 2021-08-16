@@ -24,7 +24,7 @@ exports.signup = (req, res, next) => {
 
     if (validator.isEmail(String(email))) {                    
         bcrypt.hash(password, 10, (error, hash) => {           
-                const hash2 = bcrypt.hashSync(email, 10)
+                const hash2 = bcrypt.hashSync(email, 5)
                 let sql = "INSERT INTO users (nom, prenom, email, mot_de_passe) VALUES (?, ?, ?, ?)";     
                 let inserts = [nom, prenom, hash2, hash];                                                       
                 sql = mysql.format(sql, inserts);                                                                                   
@@ -51,31 +51,30 @@ exports.signup = (req, res, next) => {
 
 
 exports.login = (req, res, next) => {
-
-    const email = req.body.email;
-    const hashmail = bcrypt.hashSync(email, 10)
+    const nom = req.body.nom;
+    const email = req.body.email; 
+    const hashmail = bcrypt.hashSync(email, 5);
     const password = req.body.password;
 
-    if (validator.isEmail(String(hashmail))) {
-        let sql= "SELECT id, email, mot_de_passe, niveau_acces FROM users WHERE email = ?";     
-        let inserts = [email];                                                                  
+    if (validator.isEmail(String(email))) {
+        let sql= "SELECT id, email, mot_de_passe, niveau_acces FROM users WHERE nom = ?";     
+        let inserts = [nom];                                                                  
         sql = mysql.format(sql, inserts);  
                                                             
 
-        const userLogin = bdd.query(sql, (error, user) => {                             
-            if (error) {                                                                
-                return res.status(400).json({ error : "Votre email est invalide !" })   
+        const userLogin = bdd.query(sql, (error, user) => {                                             //envoi de la requête à la bdd                         
+            if (error) {                                                                                //si aucune correspondance
+                return res.status(400).json({ error : "Votre nom est invalide !" })                     //le nom est invalide
             }
             if (user.length === 0) {
-                res.status(400).json({ error: "Une erreur est survenue, utilisateur non trouvé !" })           
+                res.status(400).json({ error: "Une erreur est survenue, utilisateur non trouvé !" })    //utilisateur introuvable
             }
+            
             bcrypt.compare(hashmail, user[0].email).then((valid) => {
                 if(!valid) {
                     return res.status(400).json({ error : "email invalide !"})
-                }
-                res.status(200); 
-                next();
-            });
+                }     
+            });         
             bcrypt.compare(password, user[0].mot_de_passe).then((valid) => {                
                 if (!valid) {                                                               
                     return res.status(400).json({ error : "Mot de passe invalide !"})       
@@ -87,11 +86,11 @@ exports.login = (req, res, next) => {
                         { userId: user[0].id, niveau_acces: user[0].niveau_acces },     
                         process.env.JWT_AUTH_SECRET_TOKEN,                              
                         { expiresIn: process.env.JWT_EXPIRATION }                       
-                    )
+                    )                
                 });
             });
         });
-    }
+    };
 };
 
 exports.getOneUser = (req, res, next) => {
@@ -130,11 +129,12 @@ exports.updateOneUser = (req, res, next) => {
     const password = req.body.password;
     const newpassword = req.body.newpassword;
 
-    if (validator.isEmail(String(email))) {     
+    if (validator.isAscii(String(nom))) {     
 
-        if(!password & !newpassword) {                                                                                  
+        if(!password & !newpassword) {   
+            const hash3 = bcrypt.hashSync(email, 5);                                                                           //Si les 2 mots de passe sont vides                                                             
             let sql = "UPDATE users SET nom = ?, prenom = ?, email = ?, WHERE id = ?";       
-            let inserts = [nom, prenom, email, userId];                                             
+            let inserts = [nom, prenom, hash3, userId];                                             
             sql = mysql.format(sql, inserts);                                                                           
 
             const userUpdateWithoutNewPassword = bdd.query(sql, (error, result) => {                                    
@@ -161,8 +161,9 @@ exports.updateOneUser = (req, res, next) => {
                             res.status(400).json({ error : "Mot de passe actuel invalide !" })          
                         } else {
                             bcrypt.hash(newpassword, 10, (error, hash) => {
+                                const hash3 = bcrypt.hashSync(email, 5);
                                 let sql = "UPDATE users SET nom = ?, prenom = ?, email = ?, mot_de_passe = ? WHERE id = ?";
-                                let inserts = [nom, prenom, email, hash, userId];
+                                let inserts = [nom, prenom, hash3, hash, userId];
                                 sql = mysql.format(sql, inserts);
 
                                 const userUpdateWithNewPassword = bdd.query(sql, (error, result) => {

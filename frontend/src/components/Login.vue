@@ -4,6 +4,7 @@
             <img src="../assets/icon-above-font.svg" alt="Groupomania logo">
             <form @submit.prevent = login()>
                 <div class="mb-2">Champs requis (*)</div>
+                <input id="nom" ref="nom" type="text" placeholder="Nom (*)" title="Renseignez votre nom">
                 <input id="email" ref="email" type="email" placeholder="E-mail (*)" title="Renseignez votre email" required>
                 <input id="password" ref="password" type="password" placeholder="Mot de passe (*)" title="Renseignez votre mot de passe" required>
                 <div class="message-erreur">{{ message }}</div>
@@ -29,11 +30,13 @@ export default {
     },
 
     methods: {
-        login() {                                               // fonction de connexion
+        login() {   
+            const nom = this.$refs.nom.value;                                         // fonction de connexion
             const email = this.$refs.email.value;
             const password = this.$refs.password.value;
 
-            notConnectedClient.post("/users/login", {           // envoi de la requête non authentifié avec notConnectedClient
+            notConnectedClient.post("/users/login", { 
+                nom,          // envoi de la requête non authentifié avec notConnectedClient
                 email,
                 password
             })

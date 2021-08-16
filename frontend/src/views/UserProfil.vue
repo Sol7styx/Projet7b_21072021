@@ -8,7 +8,7 @@
             <div class="mb-5 mt-15 mx-auto text-h6">Informations personnelles :</div>
             <input id="nom" ref="nom" type="text" title="Renseignez votre nom" placeholder="Nom" :value="userProfil.nom">
             <input id="prenom" ref="prenom" type="text" title="Renseignez votre prénom" placeholder="Prénom" :value="userProfil.prenom">
-            <input id="email" ref="email" type="email" title="Renseignez votre email" placeholder="E-mail (*)" :value="userProfil.email" required>
+            <input id="email" ref="email" type="email" title="Renseignez votre email" placeholder="E-mail (*)" required>
             <div class="mb-5 mt-8 mx-auto text-h6">Modifier mon mot de passe :</div>
             <input id="password" ref="password" type="password" title="Renseignez votre mot de passe actuel" placeholder="Mot de passe actuel">
             <input id="newpassword" ref="newpassword" type="password" title="Renseignez votre nouveau mot de passe" placeholder="Nouveau mot de passe">
