@@ -1,11 +1,12 @@
 require('dotenv').config();      // importation du paquet dotenv pour les variables d'environnement
+
 const validator = require("validator");     // importation du paquet validator
 const mysql = require('mysql');       // importation du paquet mysql
 const bcrypt = require ('bcrypt');       // importation du paquet bcrypt
 const jwt = require('jsonwebtoken');        // importation du paquet jwt
-
 const bdd = require("../bdd_config/bdd_connexion");     // importation de la connexion a la base de données
-
+const SHA256 = require("crypto-js/sha256");
+const BASE64 = require("crypto-js/enc-base64");
 
 let decodeToken = function(req){                                                    
     let token = req.headers.authorization.split(' ')[1];                            
@@ -24,7 +25,9 @@ exports.signup = (req, res, next) => {
 
     if (validator.isEmail(String(email))) {                    
         bcrypt.hash(password, 10, (error, hash) => {           
-                const hash2 = bcrypt.hashSync(email, 5)
+                const hash2 = BASE64.stringify(SHA256(email));
+                console.log(email);
+                console.log(hash2);
                 let sql = "INSERT INTO users (nom, prenom, email, mot_de_passe) VALUES (?, ?, ?, ?)";     
                 let inserts = [nom, prenom, hash2, hash];                                                       
                 sql = mysql.format(sql, inserts);                                                                                   
@@ -51,54 +54,42 @@ exports.signup = (req, res, next) => {
 
 
 exports.login = (req, res, next) => {
-    const nom = req.body.nom;
-    const Lemail = req.body.email; 
+
+    const email = req.body.email;
+    const hash2 = BASE64.stringify(SHA256(email));
     const password = req.body.password;
-
-    if (validator.isAscii(String(nom))) {
-        let sql= "SELECT id, email, mot_de_passe, niveau_acces FROM users WHERE nom = ?";     
-        let inserts = [nom];                                                                  
+    console.log(hash2);
+    if (validator.isEmail(String(email))) {
+        let sql= "SELECT id, email, mot_de_passe, niveau_acces FROM users WHERE email = ?";     
+        let inserts = [hash2];                                                                  
         sql = mysql.format(sql, inserts);  
-        const userLogin = bdd.query(sql, (error, user) => {                                             //envoi de la requête à la bdd                         
-            if (error) {                                                                                //si aucune correspondance
-                return res.status(400).json({ error : "Votre nom est invalide !" })                     //le nom est invalide
-            }
-            /*if (user.length === 0) {
-                res.status(400).json({ error: "Une erreur est survenue, utilisateur non trouvé !" })    //utilisateur introuvable
-            } */ else {                              
-            
-            let bool = bcrypt.compareSync(Lemail, user[0].email)
-            console.log(Lemail);
-            console.log(user[0].email);
-            console.log(bool);
-                if(bool == false)
-                {
-                    res.status(400).send("email non valide")
-                } else {
-                    res.send("l'email correspond")
-                }               
+                                                            
 
-            let bool2 = bcrypt.compareSync(password, user[0].mot_de_passe)
-            console.log(password);
-            console.log(user[0].mot_de_passe);
-            console.log(bool2);
-                if(bool2 == false)
-                {
-                    res.status(400).json({ error : "Mot de passe non valide"})
-                } else {
-                    res.status(200).json({                                                  
-                        message: "Vous êtes désormais connecté !",                                                                
-                        token: jwt.sign(                                                    
-                            { userId: user[0].id, niveau_acces: user[0].niveau_acces },     
-                            process.env.JWT_AUTH_SECRET_TOKEN,                              
-                            { expiresIn: process.env.JWT_EXPIRATION }
-                        )
-                    });
-                }       
-            };
+        const userLogin = bdd.query(sql, (error, user) => {                             
+            if (error) {                                                                
+                return res.status(400).json({ error : "Votre email est invalide !" })   
+            }
+            if (user.length === 0) {
+                res.status(400).json({ error: "Une erreur est survenue, utilisateur non trouvé !" })           
+            }
+            bcrypt.compare(password, user[0].mot_de_passe).then((valid) => {                
+                if (!valid) {                                                               
+                    return res.status(400).json({ error : "Mot de passe invalide !"})       
+                }
+
+                res.status(200).json({                                                  
+                    message: "Vous êtes désormais connecté !",                                                                
+                    token: jwt.sign(                                                    
+                        { userId: user[0].id, niveau_acces: user[0].niveau_acces },     
+                        process.env.JWT_AUTH_SECRET_TOKEN,                              
+                        { expiresIn: process.env.JWT_EXPIRATION }                       
+                    )
+                });
+            });
         });
-    };
+    }
 };
+
 exports.getOneUser = (req, res, next) => {
 
     const tokenInfos = decodeToken(req);        
@@ -135,12 +126,13 @@ exports.updateOneUser = (req, res, next) => {
     const password = req.body.password;
     const newpassword = req.body.newpassword;
 
-    if (validator.isAscii(String(nom))) {     
-        if(!password & !newpassword) {   
-            const hash3 = bcrypt.hashSync(email, 5);                                                                           //Si les 2 mots de passe sont vides                                                             
+    if (validator.isEmail(String(email))) {     
+
+        if(!password & !newpassword) {                                                                                  
             let sql = "UPDATE users SET nom = ?, prenom = ?, email = ?, WHERE id = ?";       
-            let inserts = [nom, prenom, hash3, userId];                                             
+            let inserts = [nom, prenom, email, userId];                                             
             sql = mysql.format(sql, inserts);                                                                           
+
             const userUpdateWithoutNewPassword = bdd.query(sql, (error, result) => {                                    
                 if (error) {
                     res.status(400).json({ error: "La mise à jour des informations de l'utilisateur a échoué" });
@@ -152,6 +144,7 @@ exports.updateOneUser = (req, res, next) => {
             let sql= "SELECT mot_de_passe FROM users WHERE id = ?";                                                     
             let inserts = [userId];                                                                                     
             sql = mysql.format(sql, inserts);                                                                           
+
             const userGetPassword = bdd.query(sql, (error, result) => {
                 if (error) {                                                                                            
                     res.status(400).json({ error: "Une erreur est survenue, utilisateur non trouvé !" })                
@@ -164,10 +157,10 @@ exports.updateOneUser = (req, res, next) => {
                             res.status(400).json({ error : "Mot de passe actuel invalide !" })          
                         } else {
                             bcrypt.hash(newpassword, 10, (error, hash) => {
-                                const hash3 = bcrypt.hashSync(email, 5);
                                 let sql = "UPDATE users SET nom = ?, prenom = ?, email = ?, mot_de_passe = ? WHERE id = ?";
-                                let inserts = [nom, prenom, hash3, hash, userId];
+                                let inserts = [nom, prenom, email, hash, userId];
                                 sql = mysql.format(sql, inserts);
+
                                 const userUpdateWithNewPassword = bdd.query(sql, (error, result) => {
                                     if (error) {
                                         res.status(400).json({ error: "La mise à jour des informations de l'utilisateur a échoué" });

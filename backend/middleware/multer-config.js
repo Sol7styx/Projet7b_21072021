@@ -4,8 +4,7 @@ const path = require('path');       // importation du paquet node "path" qui don
 const MIME_TYPES = {        // petite bibliothèque des mime types possible
     'image/jpg': 'jpg',
     'image/jpeg': 'jpg',
-    'image/png': 'png',
-    'image/gif': 'gif'
+    'image/png': 'png'
 };
 
 const storage = multer.diskStorage({                    // fonction de multer qui permet d'enregistrer sur le disque

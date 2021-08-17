@@ -1,42 +1,35 @@
 <template>
-    <div class="background">
-        <div class="container mx-auto">
-            <img src="../assets/icon-above-font.svg" alt="Groupomania logo">
-            <form @submit.prevent = login()>
-                <div class="mb-2">Champs requis (*)</div>
-                <input id="nom" ref="nom" type="text" placeholder="Nom (*)" title="Renseignez votre nom">
-                <input id="email" ref="email" type="email" placeholder="E-mail (*)" title="Renseignez votre email" required>
-                <input id="password" ref="password" type="password" placeholder="Mot de passe (*)" title="Renseignez votre mot de passe" required>
-                <div class="message-erreur">{{ message }}</div>
-                <div class="container-button mx-auto mt-6 mb-15">
-                    <button id="login" type="submit" class="mx-5">Connexion</button>
-                    <router-link :to="{name:'Signup'}" id="signup" class="mx-5" tag="button">Inscription</router-link>
-                </div>
-            </form>
-        </div>
+<div class="background">
+    <div class="container mx-auto">
+        <img src="../assets/icon-above-font.svg" alt="Groupomania logo">
+        <form @submit.prevent = login()>
+            <div class="mb-2">Champs requis (*)</div>
+            <input id="email" ref="email" type="email" placeholder="E-mail (*)" title="Renseignez votre email" required>
+            <input id="password" ref="password" type="password" placeholder="Mot de passe (*)" title="Renseignez votre mot de passe" required>
+            <div class="message-erreur">{{ message }}</div>
+            <div class="container-button mx-auto mt-6 mb-15">
+            <button id="login" type="submit" class="mx-5">Connexion</button>
+            <router-link :to="{name:'Signup'}" id="signup" class="mx-5" tag="button">Inscription</router-link>
+            </div>
+        </form>
     </div>
+</div>
 </template>
 
 <script>
 import {notConnectedClient} from "@/services/auth.js"           // importation de la configuration de requête pour un client non connecté
-
 export default {
     name: 'Login',
-
     data() {
         return {
-            message: "",                                        // on déclare une variable de type string, vide par défault (contiendra les messages d'erreur envoyé par le back)
+            message: "",                                        // on déclare une varibale de type string, vide par défault (contiendra les messages d'erreur envoyé par le back)
         };
     },
-
     methods: {
-        login() {   
-            const nom = this.$refs.nom.value;                                         // fonction de connexion
+        login() {                                               // fonction de connexion
             const email = this.$refs.email.value;
             const password = this.$refs.password.value;
-
-            notConnectedClient.post("/users/login", { 
-                nom,          // envoi de la requête non authentifié avec notConnectedClient
+            notConnectedClient.post("/users/login", {           // envoi de la requête non authentifié avec notConnectedClient
                 email,
                 password
             })
